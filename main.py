@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import logging
 import logging.handlers
 import queue
@@ -21,6 +22,7 @@ async def main():
             bc300_data = Bc300AdvertisingData.from_bytes(
                 advertising_data.service_data['0000fe0e-0000-1000-8000-00805f9b34fb']
             )
+            logger.info(f'{device} - {bc300_data}')
 
     async with BleakScanner(callback) as scanner:
         await stop_event.wait()
@@ -39,9 +41,16 @@ if __name__ == '__main__':
         logging.Formatter('%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)')
     )
 
+    time_stamp = datetime.datetime.now().strftime('%Y%m%d_%H.%M.%S')
+    file_handler = logging.FileHandler(filename=f'{time_stamp}.log')
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(
+        logging.Formatter('%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)')
+    )
+
     queue_listener = logging.handlers.QueueListener(
         log_queue,
-        console_handler,
+        console_handler, file_handler,
         respect_handler_level=True
     )
 
