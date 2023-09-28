@@ -4,7 +4,7 @@ import logging
 import logging.handlers
 import queue
 from bleak import BleakScanner
-from bc_data import Bc300AdvertisingData
+from bc_data import Bc300AdvertisingData, BatteryStatus
 
 DEVICE1 = 'F8:F0:05:9D:1F:4D'  # this is the 'naked' unit
 DEVICE2 = 'F8:F0:05:FE:47:EF'  # this is the unit in enclosure
@@ -18,11 +18,13 @@ async def main():
 
     def callback(device, advertising_data):
         if device.address == DEVICE1 or device.address == DEVICE2:
-            print(f'{device} - {advertising_data}')
+            # logger.debug(f'{device} - {advertising_data}')
             bc300_data = Bc300AdvertisingData.from_bytes(
                 advertising_data.service_data['0000fe0e-0000-1000-8000-00805f9b34fb']
             )
-            logger.info(f'{device} - {bc300_data}')
+            if isinstance(bc300_data, BatteryStatus):
+                logger.debug(f'{device} - {advertising_data}')
+                logger.info(f'{device} - {bc300_data}')
 
     async with BleakScanner(callback) as scanner:
         await stop_event.wait()
