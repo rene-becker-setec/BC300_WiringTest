@@ -13,7 +13,7 @@ class Bc300AdvertisingData:
                 logger.debug('Introduction')
                 (prod_id, hw_ver, hw_rev, hw_mod, sw_ver,
                  serial, uptime, discovery) = struct.unpack_from(
-                    '>BBBBB7sIB',
+                    '<BBBBB7sIB',
                     buffer=data, offset=1
                 )
                 return Introduction(
@@ -24,7 +24,7 @@ class Bc300AdvertisingData:
             case 0x01:
                 logger.debug('Battery Status')
                 (voltage, current, charge, temp_shunt, temp_batt, uptime, _) = struct.unpack_from(
-                    '>hiibbIb',
+                    '<hiibbIb',
                     buffer=data, offset=1
                 )
                 return BatteryStatus(
@@ -35,7 +35,7 @@ class Bc300AdvertisingData:
                 logger.debug('Battery Info')
                 (time2go, est_capacity, soc, soh, _, v2soc, charge_rate, ch2soc_factor, delta_t_500ms,
                  i_avg_ma, i_pt1_16ma) = struct.unpack_from(
-                    '>HHBBBBHHBHB',
+                    '<HHBBBBHHBHB',
                     buffer=data, offset=1
                 )
                 return BatteryInfo(
@@ -111,4 +111,8 @@ if __name__ == '__main__':
     x = b'\x04\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10'
     y = Bc300AdvertisingData.from_bytes(x)
     print(y)
-
+    #     voltage  current  charge   t_shunt  t_batt uptime   flags (not used)
+    # '01 2834     de150000 95250000 16       05     531a0000 00'
+    x = b'\x01(4\xde\x15\x00\x00\x95%\x00\x00\x16\x05S\x1a\x00\x00\x00'
+    y = Bc300AdvertisingData.from_bytes(x)
+    print(y)

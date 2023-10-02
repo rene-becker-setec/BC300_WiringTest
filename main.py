@@ -6,8 +6,8 @@ import queue
 from bleak import BleakScanner
 from bc_data import Bc300AdvertisingData, BatteryStatus
 
-DEVICE1 = 'F8:F0:05:9D:1F:4D'  # this is the 'naked' unit
-DEVICE2 = 'F8:F0:05:FE:47:EF'  # this is the unit in enclosure
+DEVICE1 = 'F8:F0:05:9D:1F:4D'  # this is the 'naked' unit (A2232370046)
+DEVICE2 = 'F8:F0:05:FE:47:EF'  # this is the unit in enclosure (A2244220027)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
